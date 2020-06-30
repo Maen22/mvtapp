@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView, FormView
+from django.views.generic import CreateView, UpdateView, FormView, ListView
 from .forms import CustomUserCreationForm, CustomUserChangeForm, CustomUserForm
 from .models import CustomUser
 
@@ -13,9 +13,15 @@ class SignUpView(CreateView):
     template_name = 'signup.html'
 
 
-# @login_required
-# def profile(request):
-#     return render(request, 'profile.html')
+class ListUsers(ListView):
+    queryset = CustomUser.objects.all()
+    template_name = 'ListUsers.html'
+
+
+class ListPaginateUsers(ListView):
+    queryset = CustomUser.objects.all()
+    template_name = 'ListPaginateUsers.html'
+    paginate_by = 3
 
 
 class UpdateProfileView(UpdateView):
@@ -27,10 +33,6 @@ class UpdateProfileView(UpdateView):
         return CustomUser.objects.get(email=self.request.user.email)
 
     def get_initial(self):
-        # initial = super().get_initial()
-        # initial['email'] = self.request.user.email
-        # initial['first_name'] = self.request.user.first_name
-        # initial['last_name'] = self.request.user.last_name
         initial = {
             'email': self.request.user.email,
             'first_name': self.request.user.first_name,
