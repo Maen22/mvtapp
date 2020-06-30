@@ -47,7 +47,7 @@ class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(verbose_name='email', max_length=255, unique=True, null=False)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=False)
-    image = models.ImageField(upload_to='upload/', null=True, blank=True)
+    image = models.ImageField(default='default.jpg', upload_to='upload/', null=True, blank=True)
     is_admin = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
@@ -70,3 +70,10 @@ class CustomUser(AbstractUser):
     def is_staff(self):
         # Simplest possible answer: All admins are staff
         return self.is_admin
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.user.first_name} Profile'
